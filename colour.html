@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Colour Swatch</title>
+</head>
+<body id="body">
+    <script type="text/javascript">
+        const params = (new URL(window.location)).searchParams;
+        const colour = params.get('colour');
+        document.getElementById("body").style.backgroundColor = colour;
+    </script>
+</body>
+</html>

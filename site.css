@@ -1,0 +1,41 @@
+html, body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    padding: 10px;
+}
+
+button {
+    border: none;
+    color: #ffffff;
+    background-color: #2a9d8f;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    padding: 4px;
+}
+
+section {
+    padding-top: 8px;
+}
+
+section:last-child {
+    padding-bottom: 8px;
+}
+
+details > summary {
+    padding: 4px;
+    background-color: #eeeeee;
+    border: none;
+    cursor: pointer;
+}
+
+label {
+    display: block;
+}

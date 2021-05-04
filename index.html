@@ -91,6 +91,34 @@
                 <button onclick="navigateLink()">Navigate</button>
             </section>
         </details>
+        <details>
+            <summary>Room events</summary>
+            <section>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.read.event:m.room.message" onchange="updateCapabilities()">
+                    [Read] <code>m.room.message</code> events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.read.event:m.room.message#m.text" onchange="updateCapabilities()">
+                    [Read] <code>m.room.message#m.text</code> events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.read.state_event:m.room.member" onchange="updateCapabilities()">
+                    [Read] <code>m.room.member</code> state events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.read.state_event:m.room.member#@alice:localhost" onchange="updateCapabilities()">
+                    [Read] <code>m.room.member#@alice:localhost</code> state events
+                </label>
+            </section>
+            <section>
+                <button onclick="readMessages()">Read messages</button>
+                <button onclick="readTextMessages()">Read text messages</button>
+                <button onclick="readMembers()">Read room members</button>
+                <button onclick="readAlice()">Read Alice membership</button>
+                <pre><code id="read-events-result">No events fetched.</code></pre>
+            </section>
+        </details>
     </div>
 
     <!-- <script src="https://unpkg.com/matrix-widget-api@0.1.0-beta.10/dist/api.js"></script> -->

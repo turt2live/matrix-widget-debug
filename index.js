@@ -121,3 +121,27 @@ function renegotiateCapabilities() {
     widgetApi.requestCapabilities(requestCapabilities);
     widgetApi.updateRequestedCapabilities();
 }
+
+function readMessages() {
+    widgetApi.readRoomEvents("m.room.message", 1000).then(events => {
+        $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
+    });
+}
+
+function readTextMessages() {
+    widgetApi.readRoomEvents("m.room.message", 1000, "m.text").then(events => {
+        $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
+    });
+}
+
+function readMembers() {
+    widgetApi.readStateEvents("m.room.member", 1000).then(events => {
+        $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
+    });
+}
+
+function readAlice() {
+    widgetApi.readStateEvents("m.room.member", 1000, "@alice:localhost").then(events => {
+        $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
+    });
+}

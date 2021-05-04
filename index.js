@@ -112,6 +112,12 @@ function updateCapabilities() {
 }
 
 function navigateLink() {
-    // TODO: Use widget-api function for this once available
-    widgetApi.transport.send("org.matrix.msc2931.navigate", {uri: $("#navigate-permalink").val()});
+    widgetApi.navigateTo($("#navigate-permalink").val());
+}
+
+function renegotiateCapabilities() {
+    const requestCapabilities = JSON.parse(localStorage.getItem("mxw_caps_to_request") || "[]");
+    requestCapabilities.push(mxwidgets.MatrixCapabilities.Screenshots);
+    widgetApi.requestCapabilities(requestCapabilities);
+    widgetApi.updateRequestedCapabilities();
 }

@@ -39,3 +39,7 @@ details > summary {
 label {
     display: block;
 }
+
+#capabilities-checkmarks {
+    padding-bottom: 4px;
+}

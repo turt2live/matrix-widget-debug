@@ -61,6 +61,14 @@ widgetApi.on(`action:${mxwidgets.WidgetApiToWidgetAction.UpdateVisibility}`, (ev
     $("on-screen").text(ev.detail.data.visibility);
 });
 
+widgetApi.on(`action:${mxwidgets.WidgetApiToWidgetAction.SendEvent}`, (ev) => {
+    console.log("[DbgWidget] Received timeline event: ", ev.detail.data);
+
+    // ack
+    ev.preventDefault();
+    widgetApi.transport.reply(ev.detail, {});
+});
+
 widgetApi.on("ready", () => {
     // XXX: Private method access
     widgetApi.getClientVersions().then(versions => {

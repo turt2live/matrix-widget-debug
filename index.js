@@ -23,6 +23,9 @@ $("#parsed-fragment").text(JSON.stringify(params, null, 4));
 
 const requestCapabilities = JSON.parse(localStorage.getItem("mxw_caps_to_request") || "[]");
 requestCapabilities.push(mxwidgets.MatrixCapabilities.Screenshots);
+requestCapabilities.push(...JSON.parse(localStorage.getItem("mxw_timeline_caps") || "[]"));
+
+updateTimelineCaps();
 
 $("input.cap-cb").each((_, c) => {
     const cb = $(c);
@@ -63,6 +66,8 @@ widgetApi.on(`action:${mxwidgets.WidgetApiToWidgetAction.UpdateVisibility}`, (ev
 
 widgetApi.on(`action:${mxwidgets.WidgetApiToWidgetAction.SendEvent}`, (ev) => {
     console.log("[DbgWidget] Received timeline event: ", ev.detail.data);
+
+    $("#receive-events-log").text($("#receive-events-log").text() + "\n" + JSON.stringify(ev.detail.data, null, 2));
 
     // ack
     ev.preventDefault();
@@ -123,6 +128,10 @@ function navigateLink() {
     widgetApi.navigateTo($("#navigate-permalink").val());
 }
 
+function changeRoom() {
+    widgetApi.transport.send("io.element.view_room", {room_id: $("#element-room-id").val()});
+}
+
 function renegotiateCapabilities() {
     const requestCapabilities = JSON.parse(localStorage.getItem("mxw_caps_to_request") || "[]");
     requestCapabilities.push(mxwidgets.MatrixCapabilities.Screenshots);
@@ -130,26 +139,72 @@ function renegotiateCapabilities() {
     widgetApi.updateRequestedCapabilities();
 }
 
-function readMessages() {
-    widgetApi.readRoomEvents("m.room.message", 1000).then(events => {
+function readMessages(roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    if (roomId) roomId = [roomId];
+    widgetApi.readRoomEvents("m.room.message", 1000, undefined, roomId).then(events => {
         $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
     });
 }
 
-function readTextMessages() {
-    widgetApi.readRoomEvents("m.room.message", 1000, "m.text").then(events => {
+function readTextMessages(roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    if (roomId) roomId = [roomId];
+    widgetApi.readRoomEvents("m.room.message", 1000, "m.text", roomId).then(events => {
         $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
     });
 }
 
-function readMembers() {
-    widgetApi.readStateEvents("m.room.member", 1000).then(events => {
+function readMembers(roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    if (roomId) roomId = [roomId];
+    widgetApi.readStateEvents("m.room.member", 1000, undefined, roomId).then(events => {
         $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
     });
 }
 
-function readAlice() {
-    widgetApi.readStateEvents("m.room.member", 1000, "@alice:localhost").then(events => {
+function readAlice(roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    if (roomId) roomId = [roomId];
+    widgetApi.readStateEvents("m.room.member", 1000, "@alice:localhost", roomId).then(events => {
         $("#read-events-result").text(`${events.length} results\n` + JSON.stringify(events, null, 2));
     });
+}
+
+function sendMessage(msgtype, roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    widgetApi.sendRoomEvent('m.room.message', {
+        msgtype: msgtype,
+        body: 'This is from a widget!',
+    }, roomId);
+}
+
+function sendKick(victimId, roomId) {
+    if (roomId === "#") roomId = $("#send-receive-room-id").val();
+    widgetApi.sendStateEvent('m.room.member', victimId, {
+        membership: "leave",
+        reason: "sent by widget",
+    }, roomId);
+}
+
+function addTimelineCap() {
+    const currentCaps = JSON.parse(localStorage.getItem("mxw_timeline_caps") || "[]");
+    currentCaps.push(`org.matrix.msc2762.timeline:${$("#timeline-room-id").val()}`);
+    localStorage.setItem("mxw_timeline_caps", JSON.stringify(currentCaps));
+    updateTimelineCaps();
+    $("#timeline-room-id").val("");
+}
+
+function updateTimelineCaps() {
+    const currentCaps = JSON.parse(localStorage.getItem("mxw_timeline_caps") || "[]");
+    let html = "";
+    for (const cap of currentCaps) {
+        html += `
+            <label>
+                <input type="checkbox" class="cap-cb" data-cap="${cap}" onchange="updateCapabilities()" checked="checked" disabled="disabled">
+                [Timeline] <code>${cap.substring(cap.indexOf(':') + 1)}</code>
+            </label>
+        `;
+    }
+    $("#timeline-room-caps").html(html);
 }

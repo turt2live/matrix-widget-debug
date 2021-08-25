@@ -39,7 +39,6 @@
             </section>
             <section>
                 <button onclick="sendContentLoaded()">Send content loaded</button>
-                <button onclick="sendLegacySticker()">Send legacy sticker</button>
             </section>
             <section>
                 <button onclick="setSticky(true)">Stick to screen</button>
@@ -110,13 +109,69 @@
                     <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.receive.state_event:m.room.member#@alice:localhost" onchange="updateCapabilities()">
                     [Receive] <code>m.room.member#@alice:localhost</code> state events
                 </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.send.event:m.room.message" onchange="updateCapabilities()">
+                    [Send] <code>m.room.message</code> events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.send.event:m.room.message#m.text" onchange="updateCapabilities()">
+                    [Send] <code>m.room.message#m.text</code> events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.send.state_event:m.room.member" onchange="updateCapabilities()">
+                    [Send] <code>m.room.member</code> state events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.send.state_event:m.room.member#@alice:localhost" onchange="updateCapabilities()">
+                    [Send] <code>m.room.member#@alice:localhost</code> state events
+                </label>
+                <label>
+                    <input type="checkbox" class="cap-cb" data-cap="org.matrix.msc2762.timeline:*" onchange="updateCapabilities()">
+                    [Timeline] Any room
+                </label>
+                <div id="timeline-room-caps"></div>
+                <input type="text" id="timeline-room-id" placeholder="!room:example.org" /> <button onclick="addTimelineCap()">Add timeline capability</button>
             </section>
             <section>
+                <b>Current room:</b><br />
                 <button onclick="readMessages()">Read messages</button>
                 <button onclick="readTextMessages()">Read text messages</button>
                 <button onclick="readMembers()">Read room members</button>
                 <button onclick="readAlice()">Read Alice membership</button>
+                <br /><br />
+                <button onclick="sendMessage('m.notice')">Send notice message</button>
+                <button onclick="sendMessage('m.text')">Send text message</button>
+                <button onclick="sendKick('@alice:localhost')">Kick Alice</button>
+                <button onclick="sendKick('@bob:localhost')">Kick Bob</button>
+                <br /><br />
+                <button onclick="sendLegacySticker()">Send legacy sticker</button>
+            </section>
+            <section>
+                <b>All rooms:</b><br />
+                <button onclick="readMessages('*')">Read messages</button>
+                <button onclick="readTextMessages('*')">Read text messages</button>
+                <button onclick="readMembers('*')">Read room members</button>
+                <button onclick="readAlice('*')">Read Alice membership</button>
+            </section>
+            <section>
+                <b>Specific room:</b> <input type="text" id="send-receive-room-id" value="" placeholder="!room:example.org" /><br />
+                <button onclick="readMessages('#')">Read messages</button>
+                <button onclick="readTextMessages('#')">Read text messages</button>
+                <button onclick="readMembers('#')">Read room members</button>
+                <button onclick="readAlice('#')">Read Alice membership</button>
+                <br /><br />
+                <button onclick="sendMessage('m.notice', '#')">Send notice message</button>
+                <button onclick="sendMessage('m.text', '#')">Send text message</button>
+                <button onclick="sendKick('@alice:localhost', '#')">Kick Alice</button>
+                <button onclick="sendKick('@bob:localhost', '#')">Kick Bob</button>
+            </section>
+            <section>
+                <b>Read events:</b>
                 <pre><code id="read-events-result">No events fetched.</code></pre>
+            </section>
+            <section>
+                <b>Received events log:</b>
+                <pre><code id="receive-events-log">Listener started.</code></pre>
             </section>
         </details>
     </div>
